@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글 목록</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* 연한 회색 배경 */
+        }
+        .container {
+            margin-top: 50px; /* 위쪽 여백 */
+        }
+        .table {
+            border-radius: 10px; /* 테이블 모서리 둥글게 */
+            overflow: hidden; /* 경계선 효과를 위해 테이블 내부에 잘라내기 */
+        }
+        th {
+            background-color: #007bff; /* 테이블 헤더 배경색 */
+            color: white; /* 텍스트 색상 */
+        }
+        .pagination {
+            justify-content: center; /* 페이지 네비게이션 가운데 정렬 */
+        }
+        .btn-primary {
+            margin-bottom: 20px; /* 버튼 아래 여백 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center mb-4">공지사항 목록</h2>
+    <button class="btn btn-primary" onclick="saveReq()">글 작성</button>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board: ${boardList}">
+            <td th:text="${board.id}"></td>
+            <td>
+                <a th:href="@{|/board/${board.id}|(page=${boardList.number + 1})}" th:text="${board.boardTitle}" class="text-decoration-none"></a>
+            </td>
+            <td th:text="${board.boardWriter}"></td>
+            <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/paging(page=1)}">처음으로</a>
+            </li>
+            <li class="page-item" th:classappend="${boardList.first} ? 'disabled'">
+                <a class="page-link" th:href="${boardList.first} ? '#' : @{/board/paging(page=${boardList.number})}">Prev</a>
+            </li>
+
+            <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                <li class="page-item" th:if="${page == boardList.number + 1}">
+                    <span class="page-link" th:text="${page}"></span>
+                </li>
+                <li class="page-item" th:unless="${page == boardList.number + 1}">
+                    <a class="page-link" th:href="@{/board/paging(page=${page})}" th:text="${page}"></a>
+                </li>
+            </span>
+
+            <li class="page-item" th:classappend="${boardList.last} ? 'disabled'">
+                <a class="page-link" th:href="${boardList.last} ? '#' : @{/board/paging(page=${boardList.number + 2})}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/paging(page=${boardList.totalPages})}">마지막으로</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const saveReq = () => {
+        location.href = "/board/save";
+    }
+</script>
+
+</body>
+</html>
