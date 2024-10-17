@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.order-button').hover(function(){
+                $('.order-button').addClass('hover')
+            },function(){
+                $('.order-button').removeClass('hover')
+            })
+        })
+    </script>
+
+    <!-- Swiper 라이브러리 CSS 파일 -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .section {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .section__title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .discover__container {
+            position: relative;
+        }
+
+        .discover__card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 740px;
+            height: 610px;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .discover__img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .discover__data {
+            padding: 20px;
+        }
+
+        .discover__title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .discover__description {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 10;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .swiper-button-next {
+            right: 10px;
+        }
+
+        .swiper-button-prev {
+            left: 10px;
+        }
+
+        .order-button {
+            margin-top: 50px;
+            width: 200px;
+            height: 100px;
+            background-color: rgb(153, 130, 238);
+        }
+        .order-button.hover{
+            background-color: rgb(255, 205, 248);
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <section class="discover section" id="discover">
+        <h2 class="section__title">매력적인 여행지를 발견하세요</h2>
+        <div class="discover__container container swiper-container">
+            <div class="swiper-wrapper">
+                <!--==================== DISCOVER 1 ====================-->
+                <div class="discover__card swiper-slide">
+                    <img src="/LA라스베가스.jPG" alt="" class="discover__img">
+                    <div class="discover__data">
+                        <h2 class="discover__title">LA라스베가스</h2>
+                    </div>
+                </div>
+                <!--==================== DISCOVER 2 ====================-->
+                <div class="discover__card swiper-slide">
+                    <img src="/몰디브.jPG" alt="" class="discover__img">
+                    <div class="discover__data">
+                        <h2 class="discover__title">몰디브</h2>
+                    </div>
+                </div>
+                <!--==================== DISCOVER 3 ====================-->
+                <div class="discover__card swiper-slide">
+                    <img src="/싱가포르.jpg" alt="" class="discover__img">
+                    <div class="discover__data">
+                        <h2 class="discover__title">싱가포르</h2>
+                    </div>
+                </div>
+                <!-- 추가 이미지를 위한 마크업을 여기에 추가하세요 -->
+                <div class="discover__card swiper-slide">
+                    <img src="/골드코스트 1.jpg" alt="" class="discover__img">
+                    <div class="discover__data">
+                        <h2 class="discover__title">골드코스트</h2>
+                    </div>
+                </div>
+                <div class="discover__card swiper-slide">
+                    <img src="/튀르키예.jpg" alt="" class="discover__img">
+                    <div class="discover__data">
+                        <h2 class="discover__title">튀르키예</h2>
+                    </div>
+                </div>
+            </div>
+            <!-- 슬라이드 컨트롤러 -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+        <div>
+            <button class="order-button" onclick="showAlert()">지금 주문하기</button>
+        </div>
+    </section>
+
+    <!-- Swiper 라이브러리 JavaScript 파일 -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script>
+        var swiper = new Swiper(".discover__container", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            loop: true,
+            spaceBetween: 32,
+            coverflowEffect: {
+                rotate: 0
+            },
+            navigation: {
+                nextEl: ".swiper-button-next", // 다음 슬라이드 버튼
+                prevEl: ".swiper-button-prev", // 이전 슬라이드 버튼
+            }
+        });
+
+        function showAlert() {
+            alert('상품 준비 중입니다.');
+        }
+    </script>
+</body>
+</html>

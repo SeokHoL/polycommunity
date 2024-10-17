@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.snsmd, .snsmm, .snsmz').click(function() {
+        alert("회원가입창 준비중입니다");
+        });
+    });
+    </script>
+    <script>
+    window.onload = function() {
+        var count = 0;
+        var image = document.getElementById('image');
+        var frames = [
+            '0.png', '1.png', '2.png', '3.png', '4.png', '5.png', '6.png', '7.png', '8.png', '9.png'
+        ];
+        setInterval(function() {
+            image.src = "images/" + frames[count++ % frames.length];
+        }, 5000 / frames.length);
+    }
+    
+ 
+
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        
+        div {
+            text-align: center;
+        }
+
+        #abody {
+            width: 1000px;
+            margin: 0 auto;
+            
+        }
+
+        #header {
+            width: 1000px;
+            float: left;
+        }
+
+        #body {
+            width: 1000px;
+            float: left;
+        }
+
+        #footer {
+            width: 1000px;
+            float: left;
+            background-color: rosybrown;
+        }
+
+        .section-left {
+            width: 400px;
+            height: 300px;
+            float: left;
+            margin: 200px 0;
+        }
+
+        .section-right {
+            width: 400px;
+            height: 300px;
+            float: right;
+            margin: 200px 0;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .snsmd {
+            border: 1px solid #019b75;
+            margin-bottom: 20px;
+            display: block;
+            line-height: 68px;
+            width: 100%;
+            color: #381e1f;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .snsmm {
+            display: block;
+            line-height: 68px;
+            width: 100%;
+            color: #381e1f;
+            font-size: 15px;
+            font-weight: bold;
+            border: 1px solid #ddc700;
+            margin-bottom: 20px;
+        }
+
+        .snsmz {
+            border: 1px solid #1aac00;
+            display: block;
+            line-height: 68px;
+            width: 100%;
+            color: #381e1f;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .main_button {
+            display: inline-block;
+            color: black;
+            padding: 16px 31px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+     
+    @keyframes slideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    
+    #registration-title {
+        animation: slideIn 1s ease-in-out;
+        margin-top: 50px;
+    }
+
+
+    </style>
+</head>
+<body>
+    <div id="abody">
+        <div id="header">
+            <div>
+                <a href="pageAssignment.html" class="main_button"><h1>석호필 투어</h1></a>
+                <br>
+                <h1 id="registration-title">회원가입</h1>
+                
+                
+            </div>
+        </div>
+        <div id="body">
+            <div class="section-left">
+                <section>
+                    <span><img src="/split2.jpg" width="400px" height="300px" id="image"></span>
+                </section>
+            </div>
+            <div class="section-right">
+                <ul>
+                    <br>
+                    <li class="snsmd" ><a href="#">석호필 ID로 회원가입</a></li>
+                    <li class="snsmm" ><a href="#">카카오 ID로 회원가입</a></li>
+                    <li class="snsmz" ><a href="#">네이버 ID로 회원가입</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="footer">
+            <div>
+                <p>석호필 투어 copyright 1988-2016 seokhofeeltour all right reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

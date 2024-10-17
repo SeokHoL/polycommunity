@@ -32,7 +32,7 @@ public class BoardController {
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException { //@ModelAttribute를 이용해 BoardDTO객체 필드를 다가져옴
         System.out.println("boardDTO= " +boardDTO);
         boardService.save(boardDTO);
-        return  "index";
+        return "redirect:/board/";
     }
     @GetMapping("/")
     public String findAll(Model model){ //Model 객체는 컨트롤러에서 뷰로 데이터를 전달하기 위해 사용
@@ -44,7 +44,7 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model,
-                           @PageableDefault(page=1) Pageable pageable){ //Model은 데이터를 담아가야하니깐 쓰는 객체
+                           @RequestParam(value = "page", required = false, defaultValue = "1") int page){ //Model은 데이터를 담아가야하니깐 쓰는 객체
         /*
             해당 게시글의 조회수를 하나 올리고
             게시글 데이터를 가져와서 detail.html에 출력
@@ -56,7 +56,7 @@ public class BoardController {
         model.addAttribute("commentList", commentDTOList);
 
         model.addAttribute("board", boardDTO);
-        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("page", page);
         return "detail";
     }
 
@@ -69,9 +69,13 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute BoardDTO boardDTO, Model model){
-        BoardDTO board =boardService.update(boardDTO);
-        model.addAttribute("board",board);
+    public String update(@ModelAttribute BoardDTO boardDTO, @RequestParam(defaultValue = "1") int page, Model model) {
+        BoardDTO board = boardService.update(boardDTO);
+        model.addAttribute("board", board);
+        model.addAttribute("page", page);
+
+        List<CommentDTO> commentDTOList = commentService.findAll(board.getId());
+        model.addAttribute("commentList", commentDTOList);
         return "detail";
     }
 

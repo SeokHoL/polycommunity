@@ -1,8 +1,10 @@
 package kr.ac.kopo.polycommunity.dto;
 
+import jakarta.persistence.Column;
 import kr.ac.kopo.polycommunity.entity.BoardEntity;
 import kr.ac.kopo.polycommunity.entity.BoardFileEntity;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -21,13 +23,14 @@ public class BoardDTO {
     private String boardTitle;
     private String boardContents;
     private int boardHits; //조회수
+
     private LocalDateTime boardCreatedTime;
     private LocalDateTime boardUpdatedTime;
 
     private List<MultipartFile> boardFile; // save.html -> Controller로 넘어올때 파일을 담는 용도
     private  List<String> orginalFileName; // 원본 파일 이름
     private  List<String> storedFileName;  // 서버 저장용 파일 이름
-    private  int fileAttached; //파일 첨부 여부(첨부 1, 미첨부 0)
+//    private  int fileAttached; //파일 첨부 여부(첨부 1, 미첨부 0)
 
 
 
@@ -50,20 +53,20 @@ public class BoardDTO {
         boardDTO.setBoardHits(boardEntity.getBoardHits());
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
-        if(boardEntity.getFileAttached() == 0){
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); //0
-        }else {
-            List<String> originalFileNameList =new ArrayList<>();
-            List<String> storedFileNameList = new ArrayList<>();
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); //1
-            for (BoardFileEntity boardFileEntity: boardEntity.getBoardFileEntityList()){
-                originalFileNameList.add(boardFileEntity.getOriginalFileName());
-                storedFileNameList.add(boardFileEntity.getStoredFileName());
-            }
-            boardDTO.setOrginalFileName(originalFileNameList);
-            boardDTO.setStoredFileName(storedFileNameList);
+//        if(boardEntity.getFileAttached() == 0){
+//            boardDTO.setFileAttached(boardEntity.getFileAttached()); //0
+//        }else {
+//            List<String> originalFileNameList =new ArrayList<>();
+//            List<String> storedFileNameList = new ArrayList<>();
+//            boardDTO.setFileAttached(boardEntity.getFileAttached()); //1
+//            for (BoardFileEntity boardFileEntity: boardEntity.getBoardFileEntityList()){
+//                originalFileNameList.add(boardFileEntity.getOriginalFileName());
+//                storedFileNameList.add(boardFileEntity.getStoredFileName());
+//            }
+//            boardDTO.setOrginalFileName(originalFileNameList);
+//            boardDTO.setStoredFileName(storedFileNameList);
 
-        }
+
         return boardDTO;
 
     }

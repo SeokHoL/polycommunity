@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>석호필투어</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script>
+
+        function boxclick(){
+            $('.image2').fadeIn();
+            $('.image2').fadeIn("slow");
+            $('.image2').fadeIn(3000);
+
+        }
+
+        function goToSubpage(url) {
+        window.location.href = url;
+        }
+
+
+        function goToSubpage(url) {
+            window.location.href = url;
+        }
+        $(document).ready(function() {
+               $('#chatbut').click(function(event) {
+                event.preventDefault();
+                alert("채팅상담 준비중입니다");
+            });
+            $('#topbut').click(function(event) {
+                event.preventDefault();
+                $(window).scrollTop(0)
+            });
+        });
+
+
+
+
+
+        </script>
+
+    <style>
+        #botbutton {
+        background-image: url("/chatting (2).jpg");
+            width: 38px;
+            height: 40px;
+            }
+
+
+
+.image {
+            width: 200px;
+            height: 150px;
+            transition: transform 0.3s ease;
+        }
+
+        .image:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+
+        .outer-menu-item{
+            display: inline-block;
+        }
+        .outer-menu-item ul{
+            display: none;
+        }
+        .outer-menu-item:hover ul{
+            display: block;
+            position: absolute;
+        }
+        .image{
+            width: 310px;
+            height: 200px;
+        }
+        div{
+            text-align: center;
+        }
+
+        .image2{
+            display: none;
+           width: 700px;
+           height: 200px;
+        }
+        .outer-menu{
+            text-align: left;
+
+        }
+        body{
+            background-color: white;
+        }
+
+        .menu-title{
+            font-size: 24px;
+            font-weight:bold ;
+            color:black;
+            margin: 20px;
+        }
+
+        .login{
+            float:right;
+        }
+        .login li{
+            width: 100px;
+            height: 30px;
+
+            line-height: 30px;
+
+        }
+
+        li{
+            list-style-type: none;
+        }
+
+        .inner-menu li{
+            width: 300px;
+            height: 40px;
+            background-color:whitesmoke ;
+            text-align: center;
+            line-height: 40px;
+
+        }
+        .inner-menu li:hover{
+            background-color: black;
+            color: white;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        @media screen and (max-width: 767px) {
+    .nav__menu {
+    position: fixed;
+    background-color: var(--body-color);
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100%;
+    box-shadow: -1px 0 4px rgba(14, 55, 63, 0.15);
+    padding: 3rem;
+    transition: 0.4s;
+  }
+}
+
+    .show-menu {
+    right: 0;
+    }
+
+    #side{
+        position: fixed;
+        width: 118px;
+        height: 140px;
+        right:20px;
+        bottom :100px;
+    }
+    #botbutton{
+
+        width: 118px;
+        height: 110px;
+        border : 1px solid black;
+        background-color: magenta;
+        z-index: 50;
+    }
+    #tobbutton{
+
+
+        width: 118px;
+        height: 29px;
+        border : 1px solid black;
+        z-index: 50;
+        background-color: whitesmoke;
+    }
+
+    .box:hover{
+
+            transform: scale(1.1);
+            cursor: pointer;
+
+    }
+    </style>
+
+</head>
+<body>
+    <div id="side_all">
+        <div id="chatbot">
+
+        </div>
+        <div id="side">
+        <a id="chatbut" href="#">
+        <div id="botbutton"></div>
+        </a>
+        <a href="#" id="topbut">
+        <div id="tobbutton">
+        <sapn style="font-weight: bold;">▲TOP</sapn>
+        </div>
+        </a>
+    </div>
+    </div>
+
+    <!--div 전체를 감싸는 태그-->
+    <div id="page-wrapper">
+        <header id="main-header">
+            <hgroup><!--여러제목이 나오는 태그-->
+
+                <h1 class="head-title">석호필 투어</h1>
+
+                <br>
+                <h3 class="head">청춘과 함께하는 2030여행 </h3>
+            </hgroup>
+            <hr>
+            <nav id="main-navigation">
+                <div class="pull-left">
+                    <ul class="outer-menu">
+                        <li class="outer-menu-item">
+                            <span class="menu-title">소개</span>
+                            <ul class="inner-menu">
+
+                                <a href="subpage01"><li class="inner-menu-item">석호필투어 소개</li></a>
+                                <a href="subpage07"><li class="inner-menu-item">석호필투어 소개영상 </li></a>
+                            </ul>
+                        </li>
+                        <li class="outer-menu-item">
+                            <span class="menu-title">유럽</span>
+                            <ul class="inner-menu">
+                                <a href="subpage02"><li class="inner-menu-item"> 서유럽으로 탈출패키지</li></a>
+                                <a href="subpage03"><li class="inner-menu-item">동유럽으로 탈출패키지</li></a>
+                                <a href="subpage04"><li class="inner-menu-item"> 크로아티아로 탈출패키지</li></a>
+                            </ul>
+                        </li>
+                        <li class="outer-menu-item">
+                            <span class="menu-title"></a> 일본</span>
+                            <ul class="inner-menu">
+                                <a href="subpage05"><li class="inner-menu-item">오사카로 탈출패키지</li></a>
+                                <a href="subpage06"><li class="inner-menu-item">삿포로 탈출패키지</li></a>
+                            </ul>
+                        </li>
+                        <li class="outer-menu-item">
+                            <span class="menu-title"></a>미주/지중해/동남아</span>
+                            <ul class="inner-menu">
+                                <a href="subpage08"><li class="inner-menu-item">미주/지중해/동남아로 탈출패키지</li></a>
+                            </ul>
+                        </li>
+
+                        <li class="outer-menu-item">
+                            <span class="menu-title"></a>공지사항</span>
+                            <ul class="inner-menu">
+                                <a href="index"><li class="inner-menu-item">현지 공지글 확인하기</li></a>
+                            </ul>
+                        </li>
+
+                        <ul class="login">
+                            <a href="loginpage"><li>로그인</li></a>
+                            <a href="membership"><li>회원가입</li></a>
+                        </ul>
+                    </ul>
+                </div>
+                <hr>
+                </div>
+            </nav>
+            <div id="content">
+                <section id="main-section">
+                    <article>
+                        <div class="article-header">
+                            <h1 class="article-title">▼사진을 누르면 페이지 이동 합니다▼</h1>
+                        </div>
+                        <table>
+                            <tr>
+                                <td><img class="image" src="/paris.jpg" onclick="goToSubpage('subpage02')"></td>
+                                <td><img class="image" src="/kyoto.jpg" onclick="goToSubpage('subpage05')"></td>
+                                <td><img class="image" src="/praha.jpg" onclick="goToSubpage('subpage03')"></td>
+                                <td><img class="image" src="/Tokyo.jpg" onclick="goToSubpage('subpage03')"></td>
+                                <td><img class="image" src="/croatia.jpg" onclick="goToSubpage('subpage04')"></td>
+                                <td><img class="image" src="/otaru2.jpg" onclick="goToSubpage('subpage06')"></td>
+                            </tr>
+                        </table>
+                        <hr>
+                        <br><br>
+                        <table>
+                            <tr>
+                                <td>
+                                    <h3>서유럽 일상감옥 탈출패키지</h3>
+                                    <p>영국-프랑스-스위스-이탈리아</p>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <h3>오사카 일상감옥 탈출패키지</h3>
+                                    <p>오사카-교토</p>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <h3>동유럽 일상감옥 탈출패키지</h3>
+                                    <p>체코-오스트리아-헝가리-독일</p>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <h3>도쿄 일상감옥 탈출패키지</h3>
+                                    <p>동경-하코네-신주쿠</p>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <h3>크로아티아 일상감옥 탈출패키지</h3>
+                                    <p>자그레브-폴리트비체-스플리트-두브로브니크</p>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>
+                                    <h3>삿포로 일상감옥 탈출패키지</h3>
+                                    <p>삿포로-하코다테-오타루</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <br>
+
+                        <div class="box" onclick="boxclick();">
+                            <h2>체크포인트</h2>
+                            <p>▼클릭▼석호필투어만의 특전▼클릭▼</p>
+                        </div>
+                        <div>
+                            <tr>
+                                <td><img class="image2" src="/no.jpg"></td>
+                            </tr>
+                        </div>
+
+                        </div>
+                    </article>
+                </section>
+
+            </div>
+
+
+
+        </header>
+    </div>
+</body>
+</html>

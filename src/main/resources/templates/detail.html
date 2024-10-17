@@ -63,7 +63,12 @@
     </tr>
     <tr>
       <th>작성일</th>
-      <td th:text="${board.boardCreatedTime}"></td>
+      <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+
+    <tr>
+      <th>수정일</th>
+      <td th:text="${#temporals.format(board.boardUpdatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
     </tr>
     <tr>
       <th>조회수</th>
@@ -110,7 +115,7 @@
         <td th:text="${comment.id}"></td>
         <td th:text="${comment.commentWriter}"></td>
         <td th:text="${comment.commentContents}"></td>
-        <td th:text="${comment.commentCreatedTime}"></td>
+        <td th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
       </tr>
       </tbody>
     </table>
@@ -132,26 +137,33 @@
         "boardId": id
       },
       success: function (res) {
-        let output = "<tr>";
-        for (let i in res) {
-          output += "<td>" + res[i].id + "</td>";
-          output += "<td>" + res[i].commentWriter + "</td>";
-          output += "<td>" + res[i].commentContents + "</td>";
-          output += "<td>" + res[i].commentCreatedTime + "</td>";
+        // 댓글 목록 비우기
+        const tbody = document.getElementById('comment-list').querySelector('tbody');
+        tbody.innerHTML = ''; // 기존 댓글 목록 비우기
+
+        // 서버에서 반환된 모든 댓글 추가
+        res.forEach(comment => {
+          let output = "<tr>";
+          output += "<td>" + comment.id + "</td>";
+          output += "<td>" + comment.commentWriter + "</td>";
+          output += "<td>" + comment.commentContents + "</td>";
+          output +=  "<td>" + comment.commentCreatedTime + "</td>";
           output += "</tr>";
-        }
-        document.getElementById('comment-list').querySelector('tbody').innerHTML += output;
+          tbody.innerHTML += output; // 새 댓글 추가
+        });
+
+        // 입력 필드 초기화
         document.getElementById('commentWriter').value = '';
         document.getElementById('commentContents').value = '';
       },
       error: function (err) {
-        console.log("요청실패", err);
+        console.log("요청 실패", err);
       }
     });
   }
 
   const listReq = () => {
-    const page = [[${page}]];
+    const page = [[${page}]] || 1;
     location.href = "/board/paging?page=" + page;
   }
 

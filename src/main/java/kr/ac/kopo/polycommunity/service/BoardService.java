@@ -64,7 +64,7 @@ public class BoardService {
 
     @Transactional
     public List<BoardDTO> findAll() {
-        List<BoardEntity> boardEntityList=boardRepository.findAll();
+        List<BoardEntity> boardEntityList=boardRepository.findAllByOrderByIdDesc();
         List<BoardDTO> boardDTOList = new ArrayList<>();
         for(BoardEntity boardEntity: boardEntityList){
             boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
@@ -90,6 +90,13 @@ public class BoardService {
     }
 
     public BoardDTO update(BoardDTO boardDTO) {
+        // 기존 엔티티를 조회
+        BoardEntity existingEntity = boardRepository.findById(boardDTO.getId())
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+
+        // 작성일을 기존 엔티티에서 가져와 설정
+        boardDTO.setBoardCreatedTime(existingEntity.getCreatedTime());
+
         BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
         boardRepository.save(boardEntity);
         return findById(boardDTO.getId());
