@@ -87,6 +87,16 @@ public class BoardService {
         }else {
             return null;
         }
+
+    }
+    @Transactional
+    public List<BoardDTO> searchBoards(String searchKeyword) {
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContaining(searchKeyword);
+        List<BoardDTO> boardDTOList = new ArrayList<>();
+        for (BoardEntity boardEntity : boardEntityList) {
+            boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
+        }
+        return boardDTOList;
     }
 
     public BoardDTO update(BoardDTO boardDTO) {
@@ -128,4 +138,47 @@ public class BoardService {
 
 
     }
+//    public Page<BoardDTO> searchBoardsWithPaging(String keyword, Pageable pageable) {
+//        int page = pageable.getPageNumber() - 1;
+//        int pageLimit = 3;
+//        Page<BoardEntity> boardEntities = boardRepository.findByBoardTitleContaining(
+//                keyword,
+//                PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "id"))
+//        );
+//        return boardEntities.map(board -> new BoardDTO(
+//                board.getId(),
+//                board.getBoardWriter(),
+//                board.getBoardTitle(),
+//                board.getBoardHits(),
+//                board.getCreatedTime()
+//        ));
+//    }
+@Transactional
+public List<BoardDTO> searchBoardsByTitle(String searchKeyword) {
+    List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContaining(searchKeyword);
+    return convertToDTOList(boardEntityList);
+}
+
+    @Transactional
+    public List<BoardDTO> searchBoardsByWriter(String searchKeyword) {
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardWriterContaining(searchKeyword);
+        return convertToDTOList(boardEntityList);
+    }
+
+
+    @Transactional
+    public List<BoardDTO> searchBoardsByHits(int hits) {
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardHits(hits);
+        return convertToDTOList(boardEntityList);
+    }
+
+    private List<BoardDTO> convertToDTOList(List<BoardEntity> boardEntityList) {
+        List<BoardDTO> boardDTOList = new ArrayList<>();
+        for (BoardEntity boardEntity : boardEntityList) {
+            boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
+        }
+        return boardDTOList;
+    }
+
+
 }

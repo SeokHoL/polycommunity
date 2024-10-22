@@ -1,6 +1,8 @@
 package kr.ac.kopo.polycommunity.repository;
 
 import kr.ac.kopo.polycommunity.entity.BoardEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,15 @@ public interface BoardRepository extends JpaRepository<BoardEntity,Long> { //cla
 
     // ID 내림차순으로 전체 게시글 조회
     List<BoardEntity> findAllByOrderByIdDesc();
+    List<BoardEntity> findByBoardTitleContaining(String searchKeyword);
+
+    List<BoardEntity> findByBoardWriterContaining(String searchKeyword);
+
+
+    List<BoardEntity> findByBoardHits(int hits);
+
+
+
+
+//    Page<BoardEntity> findByBoardTitleContaining(String keyword, Pageable pageable);
 }

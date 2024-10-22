@@ -35,10 +35,35 @@ public class BoardController {
         return "redirect:/board/";
     }
     @GetMapping("/")
-    public String findAll(Model model){ //Model 객체는 컨트롤러에서 뷰로 데이터를 전달하기 위해 사용
+    public String findAll(Model model, @PageableDefault(page = 1) Pageable pageable){ //Model 객체는 컨트롤러에서 뷰로 데이터를 전달하기 위해 사용
         //DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
         List<BoardDTO> boardDTOList =boardService.findAll();
         model.addAttribute("boardList", boardDTOList);
+        return "list";
+    }
+    @GetMapping("/search")
+    public String search(@RequestParam(value = "searchType") String searchType,
+                         @RequestParam(value = "keyword") String keyword,
+                         Model model) {
+        List<BoardDTO> searchResult;
+
+        switch (searchType) {
+            case "title":
+                searchResult = boardService.searchBoardsByTitle(keyword);
+                break;
+            case "writer":
+                searchResult = boardService.searchBoardsByWriter(keyword);
+                break;
+
+            case "hits":
+                searchResult = boardService.searchBoardsByHits(Integer.parseInt(keyword));
+                break;
+            default:
+                searchResult = boardService.findAll(); // 기본적으로 모든 게시글을 반환
+        }
+
+        model.addAttribute("boardList", searchResult);
+        model.addAttribute("keyword", keyword);
         return "list";
     }
 
@@ -54,6 +79,8 @@ public class BoardController {
         /*댓글 목록 가져오기*/
         List<CommentDTO> commentDTOList =commentService.findAll(id);
         model.addAttribute("commentList", commentDTOList);
+
+
 
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", page);
