@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,25 +26,36 @@ public class BoardController {
     private final CommentService commentService;
 
     @GetMapping("/save")
-    public String saveForm(){
+    public String saveForm() {
         return "save";
     }
+
     @PostMapping("/save")
     public String save(@ModelAttribute BoardDTO boardDTO) throws IOException { //@ModelAttribute를 이용해 BoardDTO객체 필드를 다가져옴
-        System.out.println("boardDTO= " +boardDTO);
+        System.out.println("boardDTO= " + boardDTO);
         boardService.save(boardDTO);
         return "redirect:/board/";
     }
+
+    // 기본 목록 페이지를 페이징 처리된 목록으로 변경
     @GetMapping("/")
-    public String findAll(Model model, @PageableDefault(page = 1) Pageable pageable){ //Model 객체는 컨트롤러에서 뷰로 데이터를 전달하기 위해 사용
-        //DB에서 전체 게시글 데이터를 가져와서 list.html에 보여준다.
-        List<BoardDTO> boardDTOList =boardService.findAll();
-        model.addAttribute("boardList", boardDTOList);
+    public String findAll(Model model, @PageableDefault(page = 1) Pageable pageable) {
+        Page<BoardDTO> boardList = boardService.paging(pageable);
+        int blockLimit = 3;
+        int startPage = (((int) (Math.ceil((double) pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "list";
     }
+
     @GetMapping("/search")
     public String search(@RequestParam(value = "searchType") String searchType,
                          @RequestParam(value = "keyword") String keyword,
+                         @PageableDefault(page = 1) Pageable pageable,  // 페이징 추가
                          Model model) {
         List<BoardDTO> searchResult;
 
@@ -54,22 +66,59 @@ public class BoardController {
             case "writer":
                 searchResult = boardService.searchBoardsByWriter(keyword);
                 break;
-
             case "hits":
-                searchResult = boardService.searchBoardsByHits(Integer.parseInt(keyword));
+                try {
+                    searchResult = boardService.searchBoardsByHits(Integer.parseInt(keyword));
+                } catch (NumberFormatException e) {
+                    searchResult = new ArrayList<>();  // 유효하지 않은 숫자 입력 처리
+                }
                 break;
             default:
-                searchResult = boardService.findAll(); // 기본적으로 모든 게시글을 반환
+                searchResult = boardService.findAll();
         }
 
+        // 검색 결과를 모델에 추가
         model.addAttribute("boardList", searchResult);
-        model.addAttribute("keyword", keyword);
+
+        // 페이징 관련 속성 추가
+        int blockLimit = 3;
+        int startPage = 1;
+        int endPage = 1;
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("searchType", searchType);  // 검색 타입 유지
+        model.addAttribute("keyword", keyword);        // 검색어 유지
+
         return "list";
     }
 
+    // 페이징 처리된 목록 보기
+    // 페이징 처리된 목록 보기
+    @GetMapping("/list")
+    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+        Page<BoardDTO> boardList = boardService.paging(pageable);
+        int blockLimit = 3;
+        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        return "list";
+    }
+
+    // 삭제 처리
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id) {
+        boardService.delete(id);
+        return "redirect:/board/list";
+    }
+
+
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model,
-                           @RequestParam(value = "page", required = false, defaultValue = "1") int page){ //Model은 데이터를 담아가야하니깐 쓰는 객체
+                           @RequestParam(value = "page", required = false, defaultValue = "1") int page) { //Model은 데이터를 담아가야하니깐 쓰는 객체
         /*
             해당 게시글의 조회수를 하나 올리고
             게시글 데이터를 가져와서 detail.html에 출력
@@ -77,9 +126,8 @@ public class BoardController {
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.findById(id);
         /*댓글 목록 가져오기*/
-        List<CommentDTO> commentDTOList =commentService.findAll(id);
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
         model.addAttribute("commentList", commentDTOList);
-
 
 
         model.addAttribute("board", boardDTO);
@@ -88,10 +136,10 @@ public class BoardController {
     }
 
     @GetMapping("/update/{id}")
-    public  String updateForm(@PathVariable Long id, Model model){
+    public String updateForm(@PathVariable Long id, Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("boardUpdate", boardDTO);
-        return  "update";
+        return "update";
 
     }
 
@@ -106,36 +154,37 @@ public class BoardController {
         return "detail";
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id){
-        boardService.delete(id);
-        return "redirect:/board/";
+
+    @GetMapping("/detail/{id}")
+    public String findDetailById(@PathVariable Long id, Model model,
+                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+        boardService.updateHits(id);
+        BoardDTO boardDTO = boardService.findById(id);
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList", commentDTOList);
+        model.addAttribute("board", boardDTO);
+        model.addAttribute("page", page);
+        return "detail";
     }
 
     //board/paging?page=1
-    @GetMapping("/paging")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model){ //Pageable 인터페이스 Pageable ->org.springframework.data.domain. 이걸 import해줘야됨 java머시기는 안됨
-        //pageable.getPageNumber();
-        Page<BoardDTO> boardList = boardService.paging(pageable);
-        int blockLimit = 3;
-        int startPage =(((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit +1; // 1 4 7 10 요런 형태가 나옴
-        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
-
-        // page 갯수 20개
-        // 현재 사용자가 3페이지에 있다면
-        // 1 2 3
-        // 현재 사용자가 7페이지에 있다면
-        // 7 8 9
-        // 보여지는 페이지 갯수 3개
-        // 총 페이지 갯수 8개
-
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        return "paging";
+//    @GetMapping("/paging")
+//    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+//        Page<BoardDTO> boardList = boardService.paging(pageable);
+//        int blockLimit = 3;
+//        int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1;
+//        int endPage = ((startPage + blockLimit - 1) < boardList.getTotalPages()) ? startPage + blockLimit - 1 : boardList.getTotalPages();
+//
+//        model.addAttribute("boardList", boardList);
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("endPage", endPage);
+//        model.addAttribute("currentPage", pageable.getPageNumber());
+//        model.addAttribute("totalPages", boardList.getTotalPages());
+//
+//        return "list";  // paging.html 대신 list.html을 사용
+//    }
 
 
 
 
     }
-}

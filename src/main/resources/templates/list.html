@@ -2,56 +2,40 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>글 목록</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa; /* 연한 회색 배경 */
-        }
-        .container {
-            margin-top: 50px; /* 위쪽 여백 */
-        }
-        table {
-            border-radius: 10px; /* 테이블 모서리 둥글게 */
-            overflow: hidden; /* 경계선 효과를 위해 테이블 내부에 잘라내기 */
-        }
-        th {
-            background-color: #007bff; /* 테이블 헤더 배경색 */
-            color: white; /* 텍스트 색상 */
-        }
-        .search-form {
-            margin-bottom: 20px;
-        }
-
-    </style>
+    <title>게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-<div class="container">
+<div class="container mt-5">
     <h2 class="text-center mb-4">공지사항 목록</h2>
 
-
-    <form action="/board/search" method="get" class="search-form">
-        <div class="row justify-content-end mb-3">
-            <div class="col-md-4">
-                <div class="input-group">
-                    <select name="searchType" class="form-select">
-                        <option value="title">제목</option>
-                        <option value="writer">작성자</option>
-
-                        <option value="hits">조회수</option>
-                    </select>
-                    <input type="text" name="keyword" class="form-control" placeholder="검색어 입력..."
-                           th:value="${keyword}">
-                    <button class="btn btn-primary" type="submit">검색</button>
-                </div>
-            </div>
+    <!-- 검색 폼 -->
+    <div class="row justify-content-end mb-3">
+        <div class="col-md-4">
+            <form action="/board/search" method="GET" class="d-flex">
+                <select name="searchType" class="form-select me-2">
+                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                    <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>
+                    <option value="hits" th:selected="${searchType == 'hits'}">조회수</option>
+                </select>
+                <input type="text" name="keyword" class="form-control me-2"
+                       placeholder="검색어를 입력하세요"
+                       th:value="${keyword}">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
         </div>
-    </form>
+    </div>
 
-    <table class="table table-bordered table-striped">
-        <thead>
+    <!-- 글작성 버튼 -->
+    <div class="row mb-3">
+        <div class="col">
+            <a href="/board/save" class="btn btn-success">글작성</a>
+        </div>
+    </div>
+
+    <!-- 게시글 목록 -->
+    <table class="table table-hover">
+        <thead class="table-light">
         <tr>
             <th>ID</th>
             <th>제목</th>
@@ -61,20 +45,70 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="board: ${boardList}">
+        <tr th:if="${boardList != null}" th:each="board : ${boardList}">
             <td th:text="${board.id}"></td>
             <td>
-                <a th:href="@{|/board/${board.id}|}" th:text="${board.boardTitle}" class="text-decoration-none"></a>
+                <a th:href="@{|/board/detail/${board.id}|(page=${boardList instanceof T(org.springframework.data.domain.Page) ? boardList.number + 1 : 1})}"
+                   th:text="${board.boardTitle}"
+                   class="text-decoration-none"></a>
             </td>
             <td th:text="${board.boardWriter}"></td>
-            <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${board.boardHits}"></td>
+        </tr>
+        <tr th:if="${boardList == null || #lists.isEmpty(boardList)}">
+            <td colspan="5" class="text-center">검색 결과가 없습니다.</td>
         </tr>
         </tbody>
     </table>
+
+    <!-- 페이징 처리 -->
+    <div class="row">
+        <div class="col">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <!-- 처음으로 -->
+                    <li class="page-item" th:if="${boardList instanceof T(org.springframework.data.domain.Page)}"
+                        th:class="${boardList.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/board/list(page=1)}">처음으로</a>
+                    </li>
+
+                    <!-- 이전 페이지 -->
+                    <li class="page-item" th:if="${boardList instanceof T(org.springframework.data.domain.Page)}"
+                        th:class="${boardList.first} ? 'disabled'">
+                        <a class="page-link" th:href="${boardList.first} ? '#' : @{/board/list(page=${boardList.number})}">
+                            이전
+                        </a>
+                    </li>
+
+                    <!-- 페이지 번호 -->
+                    <li class="page-item" th:each="page: ${#numbers.sequence(startPage, endPage)}"
+                        th:class="${page == (boardList instanceof T(org.springframework.data.domain.Page) ? boardList.number + 1 : 1)} ? 'active'">
+                        <a class="page-link" th:href="@{/board/list(page=${page})}" th:text="${page}"></a>
+                    </li>
+
+                    <!-- 다음 페이지 -->
+                    <li class="page-item" th:if="${boardList instanceof T(org.springframework.data.domain.Page)}"
+                        th:class="${boardList.last} ? 'disabled'">
+                        <a class="page-link" th:href="${boardList.last} ? '#' : @{/board/list(page=${boardList.number + 2})}">
+                            다음
+                        </a>
+                    </li>
+
+                    <!-- 마지막으로 -->
+                    <li class="page-item" th:if="${boardList instanceof T(org.springframework.data.domain.Page)}"
+                        th:class="${boardList.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/board/list(page=${boardList.totalPages})}">
+                            마지막으로
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

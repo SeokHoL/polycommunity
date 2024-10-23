@@ -31,8 +31,8 @@ public class BoardService {
 //        // 파일 첨부 여부에 따라 로직 분리
 //        if(boardDTO.getBoardFile().isEmpty()){
 //            //첨부 파일 없는경우.
-            BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
-            boardRepository.save(boardEntity);
+        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
+        boardRepository.save(boardEntity);
 //        }else{
 //            //첨부 파일이 있는경우.
 //            /*
@@ -118,7 +118,7 @@ public class BoardService {
 
     public Page<BoardDTO> paging(Pageable pageable) {
         int page =pageable.getPageNumber() -1;
-        int pageLimit = 3; //한 페이지에 보여줄 글 갯수
+        int pageLimit = 5; //한 페이지에 보여줄 글 갯수
         //한 페이지당 3개씩 글을 보여주고 정렬 기준은 id기준으로 내림차순 정렬
         //page 위치에 있는 값은 0부터 시작
         Page<BoardEntity> boardEntities = boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC,"id")));
@@ -138,7 +138,7 @@ public class BoardService {
 
 
     }
-//    public Page<BoardDTO> searchBoardsWithPaging(String keyword, Pageable pageable) {
+    //    public Page<BoardDTO> searchBoardsWithPaging(String keyword, Pageable pageable) {
 //        int page = pageable.getPageNumber() - 1;
 //        int pageLimit = 3;
 //        Page<BoardEntity> boardEntities = boardRepository.findByBoardTitleContaining(
@@ -153,11 +153,11 @@ public class BoardService {
 //                board.getCreatedTime()
 //        ));
 //    }
-@Transactional
-public List<BoardDTO> searchBoardsByTitle(String searchKeyword) {
-    List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContaining(searchKeyword);
-    return convertToDTOList(boardEntityList);
-}
+    @Transactional
+    public List<BoardDTO> searchBoardsByTitle(String searchKeyword) {
+        List<BoardEntity> boardEntityList = boardRepository.findByBoardTitleContaining(searchKeyword);
+        return convertToDTOList(boardEntityList);
+    }
 
     @Transactional
     public List<BoardDTO> searchBoardsByWriter(String searchKeyword) {

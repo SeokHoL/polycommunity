@@ -164,7 +164,7 @@
 
   const listReq = () => {
     const page = [[${page}]] || 1;
-    location.href = "/board/paging?page=" + page;
+    location.href = "/board/list?page=" + page;  // URL 수정
   }
 
   const updateReq = () => {
@@ -174,7 +174,9 @@
 
   const deleteReq = () => {
     const id = [[${board.id}]];
-    location.href = "/board/delete/" + id;
+    if(confirm("정말로 삭제하시겠습니까?")) {  // 삭제 확인 추가
+      location.href = "/board/delete/" + id;
+    }
   }
 </script>
 
