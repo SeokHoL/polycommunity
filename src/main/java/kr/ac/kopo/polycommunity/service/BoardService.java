@@ -3,8 +3,8 @@ package kr.ac.kopo.polycommunity.service;
 import jakarta.transaction.Transactional;
 import kr.ac.kopo.polycommunity.dto.BoardDTO;
 import kr.ac.kopo.polycommunity.entity.BoardEntity;
-import kr.ac.kopo.polycommunity.entity.BoardFileEntity;
-import kr.ac.kopo.polycommunity.repository.BoardFileRepository;
+
+
 import kr.ac.kopo.polycommunity.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class BoardService {
     private  final BoardRepository boardRepository;
 
-    private  final BoardFileRepository boardFileRepository;
+
 
     public void save(BoardDTO boardDTO) throws IOException {
 //        // 파일 첨부 여부에 따라 로직 분리

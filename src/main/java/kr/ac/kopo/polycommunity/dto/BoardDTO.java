@@ -2,7 +2,7 @@ package kr.ac.kopo.polycommunity.dto;
 
 import jakarta.persistence.Column;
 import kr.ac.kopo.polycommunity.entity.BoardEntity;
-import kr.ac.kopo.polycommunity.entity.BoardFileEntity;
+
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.web.multipart.MultipartFile;

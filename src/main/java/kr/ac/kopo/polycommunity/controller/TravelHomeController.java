@@ -11,6 +11,11 @@ public class TravelHomeController {
         return "pageAssignment";
     }
 
+    @GetMapping("/index")
+    public String index(){
+        return "index";
+    }
+
     @GetMapping("/loginpage")
     public String loginpage(){return "loginpage";}
 
