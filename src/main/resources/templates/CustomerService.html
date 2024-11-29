@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>고객센터 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .home-button-container {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+        }
+
+        .home-button {
+            background-color: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 5px;
+        }
+
+        .home-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5" style="position: relative;">
+    <!-- 홈 버튼 -->
+    <div class="home-button-container">
+        <button onclick="window.location.href='/pageAssignment'" class="btn btn-secondary home-button">
+            <i class="bi bi-house-door"></i>
+            <span>석호필투어 홈</span>
+        </button>
+    </div>
+
+    <!-- 로그아웃 버튼 -->
+    <button class="logout-button" id="logout-button">로그아웃</button>
+
+    <h2 class="text-center mb-4">고객센터 게시판</h2>
+
+    <!-- 검색 폼 -->
+    <div class="row justify-content-end mb-3">
+        <div class="col-md-4">
+            <form action="/CustomerService/search" method="GET" class="d-flex">
+                <select name="searchType" class="form-select me-2">
+                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                    <option value="writer" th:selected="${searchType == 'writer'}">작성자</option>
+                    <option value="hits" th:selected="${searchType == 'hits'}">조회수</option>
+                </select>
+                <input type="text" name="keyword" class="form-control me-2" placeholder="검색어를 입력하세요" th:value="${keyword}">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 글작성 버튼 -->
+    <div class="row mb-3">
+        <div class="col">
+            <a href="/customerservice/save" class="btn btn-success">글작성</a>
+        </div>
+    </div>
+
+    <!-- 게시글 목록 -->
+    <table class="table table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${boardList != null}" th:each="board : ${boardList}">
+            <td th:text="${board.id}"></td>
+            <td>
+                <a th:href="@{|/customerservice/detail/${board.id}|(page=${boardList instanceof T(org.springframework.data.domain.Page) ? boardList.number + 1 : 1})}"
+                   th:text="${board.boardTitle}"
+                   class="text-decoration-none"></a>
+            </td>
+            <td th:text="${board.boardWriter}"></td>
+            <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+        <tr th:if="${boardList == null || #lists.isEmpty(boardList)}">
+            <td colspan="5" class="text-center">검색 결과가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이징 처리 -->
+    <div class="row">
+        <div class="col">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <!-- 페이징 코드 생략 -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("logout-button").addEventListener("click", function () {
+        fetch('/member/logout', {
+            method: 'GET'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("로그아웃되었습니다.");
+                    window.location.href = "/member/login"; // 로그인 페이지로 이동
+                } else {
+                    alert("로그아웃에 실패했습니다.");
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+                alert("오류가 발생했습니다.");
+            });
+    });
+</script>
+</body>
+</html>

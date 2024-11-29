@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지글 상세</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #f8f9fa; /* 연한 회색 배경 */
+        }
+
+        .container {
+            margin-top: 50px; /* 위쪽 여백 */
+        }
+
+        .table {
+            background-color: #ffffff; /* 흰색 배경 */
+            border-radius: 10px; /* 둥근 모서리 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+
+        .btn-custom {
+            border-radius: 25px; /* 둥근 버튼 */
+        }
+
+        #comment-write {
+            margin-top: 30px; /* 댓글 작성 영역 여백 */
+            background-color: #ffffff; /* 흰색 배경 */
+            padding: 20px; /* 내부 여백 */
+            border-radius: 10px; /* 둥글게 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+
+        #comment-list {
+            margin-top: 20px; /* 댓글 출력 영역 여백 */
+        }
+
+        #comment-list table {
+            background-color: #ffffff; /* 흰색 배경 */
+            border-radius: 10px; /* 둥글게 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">공지글 상세보기</h2>
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <td th:text="${board.id}"></td>
+        </tr>
+        <tr>
+            <th>제목</th>
+            <td th:text="${board.boardTitle}"></td>
+        </tr>
+        <tr>
+            <th>작성자</th>
+            <td th:text="${board.boardWriter}"></td>
+        </tr>
+        <tr>
+            <th>작성일</th>
+            <td th:text="${#temporals.format(board.boardCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+
+        <tr>
+            <th>수정일</th>
+            <td th:text="${#temporals.format(board.boardUpdatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+        <tr>
+            <th>조회수</th>
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td th:text="${board.boardContents}"></td>
+        </tr>
+    </table>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-primary btn-custom" onclick="listReq()">목록</button>
+        <button class="btn btn-warning btn-custom" onclick="updateReq()">수정</button>
+        <button class="btn btn-danger btn-custom" onclick="deleteReq()">삭제</button>
+    </div>
+
+    <!-- 댓글 작성 부분 -->
+    <div id="comment-write">
+        <h5>댓글 작성하기</h5>
+        <div class="mb-3">
+            <input type="text" id="commentWriter" placeholder="작성자" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="text" id="commentContents" placeholder="내용" class="form-control" required>
+        </div>
+        <button id="comment-write-btn" class="btn btn-primary" onclick="commentWrite()">댓글 작성</button>
+    </div>
+
+    <!-- 댓글 출력 부분 -->
+    <div id="comment-list">
+        <h5>댓글 목록</h5>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>댓글번호</th>
+                <th>작성자</th>
+                <th>내용</th>
+                <th>작성시간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="comment: ${commentList}">
+                <td th:text="${comment.id}"></td>
+                <td th:text="${comment.commentWriter}"></td>
+                <td th:text="${comment.commentContents}"></td>
+                <td th:text="${#temporals.format(comment.commentCreatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const commentWrite = () => {
+        const writer = document.getElementById("commentWriter").value;
+        const contents = document.getElementById("commentContents").value;
+        const id = [[${board.id}]];
+
+        $.ajax({
+            type: "post",
+            url: "/customerservicecomment/save", // URL 수정
+            data: {
+                "commentWriter": writer,
+                "commentContents": contents,
+                "boardId": id
+            },
+            success: function (res) {
+                // 댓글 목록 비우기
+                const tbody = document.getElementById('comment-list').querySelector('tbody');
+                tbody.innerHTML = ''; // 기존 댓글 목록 비우기
+
+                // 서버에서 반환된 모든 댓글 추가
+                res.forEach(comment => {
+                    let output = "<tr>";
+                    output += "<td>" + comment.id + "</td>";
+                    output += "<td>" + comment.commentWriter + "</td>";
+                    output += "<td>" + comment.commentContents + "</td>";
+                    output +=  "<td>" + comment.commentCreatedTime + "</td>";
+                    output += "</tr>";
+                    tbody.innerHTML += output; // 새 댓글 추가
+                });
+
+                // 입력 필드 초기화
+                document.getElementById('commentWriter').value = '';
+                document.getElementById('commentContents').value = '';
+            },
+            error: function (err) {
+                console.log("요청 실패", err);
+            }
+        });
+    }
+
+    const listReq = () => {
+        const page = [[${page}]] || 1;
+        location.href = "/customerservice/list?page=" + page;  // URL 수정
+    }
+
+    const updateReq = () => {
+        const id = [[${board.id}]];
+        location.href = "/customerservice/update/" + id;
+    }
+
+    const deleteReq = () => {
+        const id = [[${board.id}]];
+        if(confirm("정말로 삭제하시겠습니까?")) {  // 삭제 확인 추가
+            location.href = "/customerservice/delete/" + id;
+        }
+    }
+</script>
+
+
+</body>
+</html>

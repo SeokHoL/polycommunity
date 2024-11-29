@@ -7,39 +7,59 @@
     <title>석호필투어</title>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 로그인 상태 확인
+            fetch('/member/check-login')
+                .then(response => response.json())
+                .then(data => {
+                    const loginLink = document.querySelector('.login li a[href="loginpage"]');
+                    const signupLink = document.querySelector('.login li a[href="membership"]');
+                    const logoutButton = document.getElementById('logout-button');
+                    const userIdDisplay = document.getElementById('user-id-display');
 
-        function boxclick(){
-            $('.image2').fadeIn();
-            $('.image2').fadeIn("slow");
-            $('.image2').fadeIn(3000);
+                    if (data.loggedIn && data.userId) {
+                        // 로그인 상태
+                        loginLink?.parentElement.style.display = 'none';
+                        signupLink?.parentElement.style.display = 'none';
 
-        }
+                        logoutButton?.style.setProperty('display', 'block', 'important');
+                        if (userIdDisplay) {
+                            userIdDisplay.style.display = 'block';
+                            userIdDisplay.textContent = `환영합니다, ${data.userId}!`;
+                        }
+                    } else {
+                        // 비로그인 상태
+                        loginLink?.parentElement.style.display = 'block';
+                        signupLink?.parentElement.style.display = 'block';
 
-        function goToSubpage(url) {
-        window.location.href = url;
-        }
+                        logoutButton?.style.setProperty('display', 'none', 'important');
+                        userIdDisplay?.style.setProperty('display', 'none', 'important');
+                    }
+                })
+                .catch(error => console.error('Error checking login status:', error));
 
-
-        function goToSubpage(url) {
-            window.location.href = url;
-        }
-        $(document).ready(function() {
-               $('#chatbut').click(function(event) {
-                event.preventDefault();
-                alert("채팅상담 준비중입니다");
-            });
-            $('#topbut').click(function(event) {
-                event.preventDefault();
-                $(window).scrollTop(0)
+            // 로그아웃 버튼 이벤트
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton?.addEventListener('click', function () {
+                if (confirm("로그아웃 하시겠습니까?")) {
+                    fetch('/member/logout', { method: 'GET' })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('성공적으로 로그아웃되었습니다.');
+                                window.location.href = '/member/login';
+                            } else {
+                                alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Logout error:', error);
+                            alert('로그아웃 중 오류가 발생했습니다.');
+                        });
+                }
             });
         });
 
-
-
-
-
-        </script>
-
+    </script>
     <style>
         #botbutton {
         background-image: url("/chatting (2).jpg");
@@ -250,14 +270,23 @@
                             </ul>
                         </li>
 
+                        <li class="outer-menu-item">
+                            <span class="menu-title"></a>고객센터 게시판</span>
+                            <ul class="inner-menu">
+                                <a href="/customerservice/"><li class="inner-menu-item">고객센터 바로가기</li></a>
+                            </ul>
+                        </li>
                         <ul class="login">
-                            <a href="loginpage"><li>로그인</li></a>
-                            <a href="membership"><li>회원가입</li></a>
+                            <li><a href="loginpage">로그인</a></li>
+                            <li><a href="membership">회원가입</a></li>
+                            <!-- Logout button initially hidden -->
+                            <li id="user-id-display"></li> <!-- 사용자 아이디 표시 -->
+                            <li><button id="logout-button" style="display:none;">로그아웃</button></li>
                         </ul>
                     </ul>
                 </div>
                 <hr>
-                </div>
+            </div>
             </nav>
             <div id="content">
                 <section id="main-section">
@@ -327,8 +356,6 @@
                 </section>
 
             </div>
-
-
 
         </header>
     </div>

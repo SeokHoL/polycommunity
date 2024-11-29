@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TravelHomeController {
 
-    @GetMapping("/pageAssignment")
+    @GetMapping("/pageAssignment") //메인 홈 페이지
     public String pageAssignment(){
         return "pageAssignment";
     }
